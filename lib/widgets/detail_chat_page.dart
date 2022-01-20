@@ -33,7 +33,7 @@ class DetailChatPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Shoes Store',
+                  'Shoe Store',
                   style: primaryTextStyle.copyWith(
                     fontSize: 14,
                     fontWeight: medium,
