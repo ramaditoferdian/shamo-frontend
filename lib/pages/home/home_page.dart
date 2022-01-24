@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
                     '@ramaditoferdian',
                     style: subtitleTextStyle.copyWith(
                       fontSize: 16,
-                      fontWeight: semiBold,
+                      fontWeight: reguler,
                     ),
                   ),
                 ],
@@ -244,15 +244,19 @@ class HomePage extends StatelessWidget {
       );
     }
 
-    return ListView(
-      children: [
-        header(),
-        categories(),
-        popularProductsTitle(),
-        popularProducts(),
-        newArrivalsTitle(),
-        newArrivals(),
-      ],
+    return Container(
+      height: double.infinity,
+      color: backgroundColor1,
+      child: ListView(
+        children: [
+          header(),
+          categories(),
+          popularProductsTitle(),
+          popularProducts(),
+          newArrivalsTitle(),
+          newArrivals(),
+        ],
+      ),
     );
   }
 }

@@ -60,7 +60,10 @@ class ChatPage extends StatelessWidget {
               Container(
                 height: 44,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/home', (route) => false);
+                  },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.symmetric(
                       horizontal: 24,
@@ -79,7 +82,7 @@ class ChatPage extends StatelessWidget {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -112,7 +115,8 @@ class ChatPage extends StatelessWidget {
     return Column(
       children: [
         header(),
-        content(),
+        // content(),
+        emnptyChat(),
       ],
     );
   }
