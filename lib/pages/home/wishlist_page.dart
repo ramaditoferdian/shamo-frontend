@@ -1,6 +1,9 @@
-// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, unused_element, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, unused_element, prefer_const_literals_to_create_immutables, prefer_is_empty
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo_front_end/providers/page_provider.dart';
+import 'package:shamo_front_end/providers/wishlist_provider.dart';
 import 'package:shamo_front_end/theme.dart';
 import 'package:shamo_front_end/widgets/wishlist_card.dart';
 
@@ -9,6 +12,9 @@ class WishlistPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WishListProvider wishListProvider = Provider.of<WishListProvider>(context);
+    PageProvider pageProvider = Provider.of<PageProvider>(context);
+
     Widget header() {
       return AppBar(
         backgroundColor: backgroundColor1,
@@ -61,8 +67,7 @@ class WishlistPage extends StatelessWidget {
                 height: 44,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/home', (route) => false);
+                    pageProvider.currentIndex = 0;
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.symmetric(
@@ -97,11 +102,11 @@ class WishlistPage extends StatelessWidget {
             padding: EdgeInsets.symmetric(
               horizontal: defaultMargin,
             ),
-            children: [
-              WishlistCard(),
-              WishlistCard(),
-              WishlistCard(),
-            ],
+            children: wishListProvider.wishlist
+                .map(
+                  (product) => WishlistCard(product),
+                )
+                .toList(),
           ),
         ),
       );
@@ -110,8 +115,8 @@ class WishlistPage extends StatelessWidget {
     return Column(
       children: [
         header(),
-        emptyWishlist(),
-        // content(),
+        // emptyWishlist(),
+        wishListProvider.wishlist.length == 0 ? emptyWishlist() : content(),
       ],
     );
   }

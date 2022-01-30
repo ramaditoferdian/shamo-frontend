@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shamo_front_end/pages/cart_page.dart';
 import 'package:shamo_front_end/pages/checkout_page.dart';
 import 'package:shamo_front_end/pages/checkout_success_page.dart';
@@ -11,30 +13,58 @@ import 'package:shamo_front_end/pages/product_page.dart';
 import 'package:shamo_front_end/pages/sign_in_page.dart';
 import 'package:shamo_front_end/pages/sign_up_page.dart';
 import 'package:shamo_front_end/pages/splash_page.dart';
+import 'package:shamo_front_end/providers/auth_provider.dart';
+import 'package:shamo_front_end/providers/cart_provider.dart';
+import 'package:shamo_front_end/providers/page_provider.dart';
+import 'package:shamo_front_end/providers/product_provider.dart';
+import 'package:shamo_front_end/providers/transaction_provider.dart';
+import 'package:shamo_front_end/providers/wishlist_provider.dart';
 import 'package:shamo_front_end/theme.dart';
 import 'package:shamo_front_end/pages/detail_chat_page.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      routes: {
-        '/': (context) => SplashPage(),
-        '/sign-in': (context) => SignInPage(),
-        '/sign-up': (context) => SignUpPage(),
-        '/home': (context) => MainPage(),
-        '/detail-chat': (context) => DetailChatPage(),
-        '/edit-profile': (context) => EditProfilePage(),
-        '/product': (context) => ProductPage(),
-        '/cart': (context) => CartPage(),
-        '/checkout': (context) => CheckoutPage(),
-        '/checkout-success': (context) => CheckoutSuccessPage(),
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AuthProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ProductProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => WishListProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CartProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => TransactionProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PageProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        routes: {
+          '/': (context) => SplashPage(),
+          '/sign-in': (context) => SignInPage(),
+          '/sign-up': (context) => SignUpPage(),
+          '/home': (context) => MainPage(),
+          '/edit-profile': (context) => EditProfilePage(),
+          '/cart': (context) => CartPage(),
+          '/checkout': (context) => CheckoutPage(),
+          '/checkout-success': (context) => CheckoutSuccessPage(),
+        },
+      ),
     );
   }
 }

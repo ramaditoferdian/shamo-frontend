@@ -1,6 +1,11 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo_front_end/models/message_model.dart';
+import 'package:shamo_front_end/providers/auth_provider.dart';
+import 'package:shamo_front_end/providers/page_provider.dart';
+import 'package:shamo_front_end/services/message_service.dart';
 import 'package:shamo_front_end/theme.dart';
 import 'package:shamo_front_end/widgets/chat_tile.dart';
 
@@ -9,6 +14,9 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    PageProvider pageProvider = Provider.of<PageProvider>(context);
+
     Widget header() {
       return AppBar(
         backgroundColor: backgroundColor1,
@@ -61,8 +69,7 @@ class ChatPage extends StatelessWidget {
                 height: 44,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/home', (route) => false);
+                    pageProvider.currentIndex = 0;
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.symmetric(
@@ -90,33 +97,40 @@ class ChatPage extends StatelessWidget {
     }
 
     Widget content() {
-      return Expanded(
-        child: Container(
-          width: double.infinity, // selebar layar
-          color: backgroundColor3,
-          child: ListView(
-            padding: EdgeInsets.symmetric(
-              horizontal: defaultMargin,
-            ),
-            children: [
-              ChatTile(),
-              ChatTile(),
-              ChatTile(),
-              ChatTile(),
-              ChatTile(),
-              ChatTile(),
-              ChatTile(),
-            ],
-          ),
-        ),
-      );
+      return StreamBuilder<List<MessageModel>>(
+          stream: MessageService()
+              .getMessageByUserId(userId: authProvider.user.id!),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              if (snapshot.data!.length == 0) {
+                return emnptyChat();
+              }
+
+              return Expanded(
+                child: Container(
+                  width: double.infinity, // selebar layar
+                  color: backgroundColor3,
+                  child: ListView(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: defaultMargin,
+                    ),
+                    children: [
+                      ChatTile(snapshot.data![snapshot.data!.length - 1]),
+                    ],
+                  ),
+                ),
+              );
+            } else {
+              return emnptyChat();
+            }
+          });
     }
 
     return Column(
       children: [
         header(),
-        // content(),
-        emnptyChat(),
+        content(),
+        // emnptyChat(),
       ],
     );
   }
